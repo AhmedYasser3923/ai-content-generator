@@ -1,1077 +1,1374 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Sahara Content Generator - Powered by SpaceTechs</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-:root {
-  --font: 'Cairo', 'Inter', -apple-system, sans-serif;
-  --radius: 14px;
-  --radius-sm: 9px;
-  --transition: 0.2s ease;
-}
-
-/* ── Dark theme ── */
-[data-theme="dark"] {
-  --bg:           #1a0a12;
-  --bg-surface:   #2a1120;
-  --bg-surface-2: #35172a;
-  --bg-input:     #200d18;
-  --border:       #4a2038;
-  --border-focus: #c0674a;
-  --text:         #f5e6ee;
-  --text-sub:     #c9a0b4;
-  --text-muted:   #8a5570;
-  --accent:       #c0674a;
-  --accent-hover: #d4835f;
-  --accent-bg:    rgba(192,103,74,0.12);
-  --success:      #3db87a;
-  --success-hover:#2fa066;
-  --success-bg:   rgba(61,184,122,0.1);
-  --danger:       #e05555;
-  --shadow:       0 2px 8px rgba(0,0,0,0.4);
-  --shadow-lg:    0 8px 32px rgba(0,0,0,0.5);
-}
-
-/* ── Light theme ── */
-[data-theme="light"] {
-  --bg:           #fdf5f8;
-  --bg-surface:   #ffffff;
-  --bg-surface-2: #f8edf2;
-  --bg-input:     #fdf5f8;
-  --border:       #e8ccd8;
-  --border-focus: #c0674a;
-  --text:         #2a0f1e;
-  --text-sub:     #6b3a52;
-  --text-muted:   #a07088;
-  --accent:       #c0674a;
-  --accent-hover: #a8573c;
-  --accent-bg:    rgba(192,103,74,0.08);
-  --success:      #2a9e68;
-  --success-hover:#228055;
-  --success-bg:   rgba(42,158,104,0.08);
-  --danger:       #cc3333;
-  --shadow:       0 2px 8px rgba(0,0,0,0.06);
-  --shadow-lg:    0 8px 32px rgba(0,0,0,0.1);
-}
-
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  line-height: 1.6;
-  transition: background var(--transition), color var(--transition);
-}
-
-/* ── Layout ── */
-.layout { display:flex; min-height:100vh; }
-
-/* ── Sidebar ── */
-.sidebar {
-  width: 270px;
-  background: var(--bg-surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top:0; left:0; bottom:0;
-  overflow-y: auto;
-  transition: transform var(--transition);
-  z-index: 50;
-}
-
-.sidebar-brand {
-  padding: 20px 18px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand-logo {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--accent), #8b3a5a);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; color: #fff; font-size: 15px;
-  flex-shrink: 0;
-}
-
-.brand-name { font-size: 14px; font-weight: 700; line-height: 1.3; }
-.brand-sub  { font-size: 11px; color: var(--text-muted); }
-
-.sidebar-section {
-  padding: 16px 14px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-
-.history-list { list-style: none; padding: 0 8px; flex:1; }
-
-.history-item {
-  padding: 9px 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--text-sub);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 2px;
-  transition: background var(--transition), color var(--transition);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.history-item:hover  { background: var(--bg-surface-2); color: var(--text); }
-.history-item.active { background: var(--accent-bg); color: var(--accent); }
-
-.history-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--text-muted);
-  flex-shrink: 0;
-}
-.history-item.active .history-dot { background: var(--accent); }
-
-.history-empty {
-  padding: 28px 12px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.sidebar-footer {
-  padding: 12px 10px;
-  border-top: 1px solid var(--border);
-  margin-top: auto;
-}
-
-/* ── Main ── */
-.main {
-  margin-left: 270px;
-  flex: 1;
-  padding: 32px 44px;
-  max-width: 920px;
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 28px;
-}
-
-.page-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.page-title img {
-  height: 28px;
-  width: auto;
-  object-fit: contain;
-}
-
-.theme-btn {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 5px 6px;
-  cursor: pointer;
-  display: flex;
-  gap: 2px;
-}
-
-.theme-btn span {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-  transition: background var(--transition);
-}
-
-.theme-btn span.on { background: var(--accent-bg); }
-
-/* ── Cards ── */
-.card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 22px 24px;
-  margin-bottom: 18px;
-  box-shadow: var(--shadow);
-  transition: background var(--transition);
-}
-
-.card-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-/* ── Form ── */
-label.field-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-sub);
-  margin-bottom: 6px;
-}
-
-textarea, select {
-  width: 100%;
-  padding: 11px 13px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 14px;
-  outline: none;
-  transition: border-color var(--transition);
-  -webkit-appearance: none;
-}
-
-textarea:focus, select:focus { border-color: var(--border-focus); }
-textarea { resize: vertical; min-height: 80px; }
-
-select {
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a5570' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
-}
-
-.row { display: flex; gap: 12px; margin-bottom: 18px; }
-.row > * { flex: 1; }
-.mb { margin-bottom: 16px; }
-
-/* ── Buttons ── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 10px 18px;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background var(--transition), opacity var(--transition);
-}
-
-.btn:active { opacity: 0.85; }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-.btn-accent  { background: var(--accent); color:#fff; width:100%; padding:13px; font-weight:700; font-size:15px; }
-.btn-accent:not(:disabled):hover { background: var(--accent-hover); }
-
-.btn-success { background: var(--success); color:#fff; }
-.btn-success:hover { background: var(--success-hover); }
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-sub);
-}
-.btn-outline:hover { background: var(--bg-surface-2); color: var(--text); }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-  padding: 8px 12px;
-  width: 100%;
-  justify-content: flex-start;
-}
-.btn-ghost:hover { background: var(--bg-surface-2); color: var(--text); }
-
-.btn-cancel {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-sub);
-}
-.btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
-
-.actions-row { display:flex; gap:10px; flex-wrap:wrap; }
-
-/* ── Error ── */
-.error-box {
-  display: none;
-  background: rgba(224,85,85,0.08);
-  border: 1px solid rgba(224,85,85,0.3);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  color: #e07070;
-  gap: 8px;
-  align-items: flex-start;
-  line-height: 1.5;
-}
-.error-box.show { display:flex; }
-
-/* ── Loader ── */
-.loader { display:none; text-align:center; padding:52px 20px; }
-.loader.show { display:block; }
-
-.spin {
-  width: 38px; height: 38px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.75s linear infinite;
-  margin: 0 auto 14px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.loader p { font-size: 14px; color: var(--text-sub); }
-.loader small { font-size: 12px; color: var(--text-muted); display:block; margin-top:6px; }
-
-/* ── Output ── */
-.output { display:none; }
-.output.show { display:block; }
-
-.research-text {
-  font-size: 14px;
-  line-height: 1.9;
-  color: var(--text-sub);
-  white-space: pre-wrap;
-  direction: rtl;
-  text-align: right;
-}
-
-.post-text {
-  direction: rtl;
-  text-align: right;
-}
-
-/* Post preview */
-.post-preview {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 18px;
-}
-
-.post-header {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  margin-bottom: 13px;
-}
-
-.post-avatar {
-  width: 42px; height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #8b3a5a);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-weight: 700; font-size: 17px;
-  flex-shrink: 0;
-}
-
-.post-name { font-size: 14px; font-weight: 600; }
-.post-time { font-size: 12px; color: var(--text-muted); }
-
-.post-text {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--text);
-  white-space: pre-wrap;
-}
-
-/* Published badge */
-.badge-published {
-  display: none;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--success);
-  background: var(--success-bg);
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-left: auto;
-}
-.badge-published.show { display:inline-flex; }
-.badge-dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
-
-/* Image */
-.img-wrap {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  min-height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.img-wrap img { width:100%; display:block; border-radius: var(--radius-sm); }
-.img-placeholder { font-size: 13px; color: var(--text-muted); padding: 40px; text-align:center; }
-
-.img-actions { display:flex; gap:8px; margin-top:10px; }
-
-/* ── Toast ── */
-.toast {
-  position: fixed;
-  bottom: 22px; right: 22px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 11px 18px;
-  font-size: 13px;
-  box-shadow: var(--shadow-lg);
-  display: flex; align-items: center; gap:8px;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.28s ease;
-  z-index: 200;
-  max-width: 360px;
-}
-.toast.show { transform: translateY(0); opacity:1; }
-
-/* ── Modals ── */
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(3px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-}
-.overlay.show { display:flex; }
-
-.modal {
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  width: 90%;
-  box-shadow: var(--shadow-lg);
-}
-
-/* Confirm modal */
-.confirm-modal { max-width: 420px; text-align:center; }
-.confirm-icon  { font-size: 46px; margin-bottom: 10px; }
-.confirm-modal h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-.confirm-modal p  { font-size: 14px; color: var(--text-sub); margin-bottom: 16px; line-height:1.5; }
-
-.confirm-preview {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  font-size: 13px;
-  color: var(--text-sub);
-  text-align: left;
-  max-height: 80px;
-  overflow: hidden;
-  position: relative;
-  line-height: 1.5;
-  margin-bottom: 20px;
-}
-.confirm-preview::after {
-  content:'';
-  position:absolute;
-  bottom:0;left:0;right:0;
-  height:24px;
-  background: linear-gradient(transparent, var(--bg-input));
-}
-
-.confirm-modal .modal-btns { display:flex; gap:10px; justify-content:center; }
-
-/* Edit modal */
-.edit-modal { max-width: 600px; }
-.edit-modal h3 { font-size: 18px; font-weight: 600; margin-bottom: 14px; }
-.edit-modal textarea { min-height: 200px; margin-bottom: 14px; }
-.edit-modal .modal-btns { display:flex; gap:10px; justify-content:flex-end; }
-
-/* ── n8n debug panel (hidden by default) ── */
-.debug-box {
-  display: none;
-  background: var(--bg-surface-2);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  margin-top: 10px;
-  font-family: monospace;
-  font-size: 12px;
-  color: var(--text-muted);
-  word-break: break-all;
-  white-space: pre-wrap;
-  max-height: 120px;
-  overflow-y: auto;
-}
-.debug-box.show { display: block; }
-
-/* ── Responsive ── */
-@media (max-width: 720px) {
-  .sidebar { transform: translateX(-100%); }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; padding: 20px 16px; padding-top: 56px; }
-  .menu-btn { display:flex; }
-}
-
-.menu-btn {
-  display: none;
-  position: fixed;
-  top: 14px; left: 14px;
-  z-index: 60;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 36px; height: 36px;
-  cursor: pointer;
-  align-items: center; justify-content: center;
-  font-size: 18px;
-}
-</style>
-</head>
-<body>
-
-<button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
-
-<div class="layout">
-
-  <!-- ══ SIDEBAR ══ -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-logo">S</div>
-      <div>
-        <div class="brand-name">Sahara Content Studio</div>
-        <div class="brand-sub">Powered by SpaceTechs</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section">History</div>
-    <ul class="history-list" id="historyList">
-      <li class="history-empty" id="historyEmpty">No ideas generated yet</li>
-    </ul>
-
-    <div class="sidebar-footer">
-      <button class="btn btn-ghost" onclick="clearHistory()">🗑 Clear History</button>
-    </div>
-  </aside>
-
-  <!-- ══ MAIN ══ -->
-  <main class="main">
-
-    <div class="topbar">
-      <div class="page-title">
-        Content Generator
-      </div>
-      <div class="theme-btn" onclick="toggleTheme()">
-        <span id="sunBtn">☀️</span>
-        <span id="moonBtn" class="on">🌙</span>
-      </div>
-    </div>
-
-    <!-- Error -->
-    <div class="error-box" id="errorBox">
-      <span>⚠️</span>
-      <span id="errorMsg"></span>
-    </div>
-
-    <!-- ── Input card ── -->
-    <div class="card">
-      <div class="card-label">✏️ New Content</div>
-
-      <div class="mb">
-        <label class="field-label">
-          Post idea
-          <span style="color:var(--text-muted);font-weight:400"> — optional, leave blank to let n8n auto-pick</span>
-        </label>
-        <textarea id="ideaInput" placeholder="e.g. How AI is transforming supply chains in 2026...&#10;Or leave blank to auto-generate from your sheet"></textarea>
-      </div>
-
-      <div class="row">
-        <div>
-          <label class="field-label">Tone</label>
-          <select id="toneSelect">
-            <option value="professional">Professional</option>
-            <option value="casual">Casual</option>
-            <option value="bold">Bold</option>
-          </select>
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Content Generator</title>
+    <style>
+      /* ── Reset & Variables ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --font:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --transition: 0.25s ease;
+      }
+
+      [data-theme="dark"] {
+        --bg: #0f1117;
+        --bg-surface: #1a1d27;
+        --bg-surface-hover: #222632;
+        --bg-input: #141720;
+        --border: #2a2e3b;
+        --border-focus: #6366f1;
+        --text: #e8eaed;
+        --text-secondary: #9ca3af;
+        --text-muted: #6b7280;
+        --accent: #6366f1;
+        --accent-hover: #818cf8;
+        --accent-bg: rgba(99, 102, 241, 0.1);
+        --success: #22c55e;
+        --success-hover: #16a34a;
+        --success-bg: rgba(34, 197, 94, 0.1);
+        --warning: #f59e0b;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+        --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      [data-theme="light"] {
+        --bg: #f8f9fb;
+        --bg-surface: #ffffff;
+        --bg-surface-hover: #f3f4f6;
+        --bg-input: #f9fafb;
+        --border: #e5e7eb;
+        --border-focus: #6366f1;
+        --text: #111827;
+        --text-secondary: #4b5563;
+        --text-muted: #9ca3af;
+        --accent: #6366f1;
+        --accent-hover: #4f46e5;
+        --accent-bg: rgba(99, 102, 241, 0.06);
+        --success: #16a34a;
+        --success-hover: #15803d;
+        --success-bg: rgba(22, 163, 74, 0.06);
+        --warning: #d97706;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        transition:
+          background var(--transition),
+          color var(--transition);
+      }
+
+      /* ── Layout ── */
+      .app-wrapper {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 280px;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border);
+        padding: 24px 16px;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        overflow-y: auto;
+        transition:
+          transform var(--transition),
+          background var(--transition);
+        z-index: 50;
+      }
+
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 16px;
+      }
+
+      .sidebar-header .logo {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: #fff;
+        font-size: 14px;
+      }
+
+      .sidebar-header h2 {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .sidebar-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-bottom: 8px;
+        padding: 0 8px;
+      }
+
+      .history-list {
+        list-style: none;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .history-item {
+        padding: 10px 12px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text-secondary);
+        transition:
+          background var(--transition),
+          color var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 2px;
+      }
+
+      .history-item:hover {
+        background: var(--bg-surface-hover);
+        color: var(--text);
+      }
+      .history-item.active {
+        background: var(--accent-bg);
+        color: var(--accent);
+      }
+
+      .history-item .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        flex-shrink: 0;
+      }
+
+      .history-item.active .dot {
+        background: var(--accent);
+      }
+
+      .history-empty {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+        padding: 32px 16px;
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 280px;
+        padding: 32px 40px;
+        max-width: 900px;
+      }
+
+      /* ── Top bar ── */
+      .top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+      }
+
+      .top-bar h1 {
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .theme-toggle {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        transition: background var(--transition);
+      }
+
+      .theme-toggle span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        font-size: 14px;
+        transition: background var(--transition);
+      }
+
+      .theme-toggle span.active {
+        background: var(--accent-bg);
+      }
+
+      /* ── Cards ── */
+      .card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow);
+        transition:
+          background var(--transition),
+          border-color var(--transition);
+      }
+
+      .card-title {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .card-title .icon {
+        font-size: 16px;
+      }
+
+      /* ── Form ── */
+      .input-group {
+        margin-bottom: 16px;
+      }
+
+      .input-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+      }
+
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px 14px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 14px;
+        transition:
+          border-color var(--transition),
+          background var(--transition);
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      textarea:focus,
+      select:focus {
+        border-color: var(--border-focus);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      select {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+
+      .row {
+        display: flex;
+        gap: 12px;
+      }
+      .row > * {
+        flex: 1;
+      }
+
+      /* ── Buttons ── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+          background var(--transition),
+          transform 0.1s;
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        width: 100%;
+        padding: 12px;
+        font-weight: 600;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-success {
+        background: var(--success);
+        color: #fff;
+      }
+
+      .btn-success:hover {
+        background: var(--success-hover);
+      }
+
+      .btn-outline {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+      }
+
+      .btn-outline:hover {
+        background: var(--bg-surface-hover);
+        color: var(--text);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-secondary);
+        padding: 8px 12px;
+      }
+
+      .btn-ghost:hover {
+        background: var(--bg-surface-hover);
+        color: var(--text);
+      }
+
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* ── Loading ── */
+      .loading-state {
+        display: none;
+        text-align: center;
+        padding: 48px 24px;
+      }
+
+      .loading-state.visible {
+        display: block;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 16px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-state p {
+        color: var(--text-secondary);
+        font-size: 14px;
+      }
+
+      .loading-dots::after {
+        content: "";
+        animation: dots 1.5s steps(4, end) infinite;
+      }
+
+      @keyframes dots {
+        0% {
+          content: "";
+        }
+        25% {
+          content: ".";
+        }
+        50% {
+          content: "..";
+        }
+        75% {
+          content: "...";
+        }
+      }
+
+      /* ── Output ── */
+      .output-section {
+        display: none;
+      }
+      .output-section.visible {
+        display: block;
+      }
+
+      .research-content {
+        font-size: 14px;
+        line-height: 1.75;
+        color: var(--text-secondary);
+        white-space: pre-wrap;
+      }
+
+      .post-preview {
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 20px;
+      }
+
+      .post-preview-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .post-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), #a855f7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+      }
+
+      .post-meta .post-name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .post-meta .post-time {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .post-body {
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--text);
+        white-space: pre-wrap;
+      }
+
+      .image-container {
+        position: relative;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        background: var(--bg-input);
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .image-container img {
+        width: 100%;
+        display: block;
+        border-radius: var(--radius-sm);
+      }
+
+      .image-placeholder {
+        color: var(--text-muted);
+        font-size: 14px;
+        padding: 48px;
+        text-align: center;
+      }
+
+      .image-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      /* ── Error ── */
+      .error-banner {
+        display: none;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        color: #ef4444;
+        font-size: 14px;
+      }
+
+      .error-banner.visible {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* ── Status badge ── */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-badge.published {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+
+      .status-badge .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      /* ── Toast ── */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px 20px;
+        box-shadow: var(--shadow-lg);
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 100;
+      }
+
+      .toast.visible {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* ── Modals (shared) ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 80;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(2px);
+      }
+
+      .modal-overlay.visible {
+        display: flex;
+      }
+
+      .modal {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 28px;
+        width: 90%;
+        max-width: 600px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .modal h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+
+      .modal textarea {
+        min-height: 200px;
+        margin-bottom: 16px;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+      }
+
+      /* ── Confirm modal ── */
+      .confirm-modal {
+        max-width: 420px;
+        text-align: center;
+      }
+
+      .confirm-modal .confirm-icon {
+        font-size: 44px;
+        margin-bottom: 12px;
+        line-height: 1;
+      }
+
+      .confirm-modal h3 {
+        font-size: 20px;
+        margin-bottom: 8px;
+      }
+
+      .confirm-modal p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .confirm-preview {
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px 14px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        text-align: left;
+        margin-bottom: 20px;
+        max-height: 80px;
+        overflow: hidden;
+        position: relative;
+        line-height: 1.5;
+      }
+
+      .confirm-preview::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 28px;
+        background: linear-gradient(transparent, var(--bg-input));
+      }
+
+      .confirm-modal .modal-actions {
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .btn-danger {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+      }
+
+      .btn-danger:hover {
+        background: rgba(239, 68, 68, 0.08);
+        color: #ef4444;
+        border-color: rgba(239, 68, 68, 0.3);
+      }
+
+      /* ── Responsive ── */
+      .sidebar-toggle {
+        display: none;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 60;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--text);
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .sidebar-toggle {
+          display: flex;
+        }
+        .main-content {
+          margin-left: 0;
+          padding: 24px 20px;
+          padding-top: 60px;
+        }
+      }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Sidebar Toggle (mobile) -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()">&#9776;</button>
+
+    <div class="app-wrapper">
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">AI</div>
+          <h2>Content Studio</h2>
         </div>
-        <div>
-          <label class="field-label">Platform</label>
-          <select id="platformSelect">
-            <option value="linkedin">LinkedIn</option>
-            <option value="twitter">Twitter / X</option>
-          </select>
+        <div class="sidebar-label">History</div>
+        <ul class="history-list" id="historyList">
+          <li class="history-empty" id="historyEmpty">
+            No ideas generated yet
+          </li>
+        </ul>
+        <div
+          style="
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            margin-top: 12px;
+          "
+        >
+          <button
+            class="btn btn-ghost"
+            style="width: 100%; justify-content: flex-start"
+            onclick="clearHistory()"
+          >
+            &#128465; Clear History
+          </button>
         </div>
-      </div>
+      </aside>
 
-      <button class="btn btn-accent" id="generateBtn" onclick="generate()">✨ Generate Content</button>
-    </div>
-
-    <!-- ── Loading ── -->
-    <div class="loader" id="loader">
-      <div class="spin"></div>
-      <p>Generating your content…</p>
-      <small>This can take up to 60 seconds ☕</small>
-    </div>
-
-    <!-- ══ OUTPUT ══ -->
-    <div class="output" id="output">
-
-      <!-- Research -->
-      <div class="card">
-        <div class="card-label">📚 Research</div>
-        <div class="research-text" id="researchOut"></div>
-      </div>
-
-      <!-- Post -->
-      <div class="card">
-        <div class="card-label">
-          💬 Generated Post
-          <span class="badge-published" id="publishedBadge"><span class="badge-dot"></span>Published</span>
+      <!-- ── Main ── -->
+      <main class="main-content">
+        <div class="top-bar">
+          <h1>Content Generator</h1>
+          <div
+            class="theme-toggle"
+            onclick="toggleTheme()"
+            title="Toggle theme"
+          >
+            <span id="sunIcon">&#9728;&#65039;</span>
+            <span id="moonIcon" class="active">&#127769;</span>
+          </div>
         </div>
-        <div class="post-preview">
-          <div class="post-header">
-            <div class="post-avatar">K</div>
-            <div>
-              <div class="post-name">Khalid</div>
-              <div class="post-time" id="postTime">Just now</div>
+
+        <!-- Error Banner -->
+        <div class="error-banner" id="errorBanner">
+          <span>&#9888;&#65039;</span>
+          <span id="errorText">Something went wrong. Please try again.</span>
+        </div>
+
+        <!-- ── Input Card ── -->
+        <div class="card" id="inputCard">
+          <div class="card-title">
+            <span class="icon">&#9997;&#65039;</span> New Content
+          </div>
+          <div class="input-group">
+            <label for="ideaInput"
+              >Enter your post idea
+              <span style="color: var(--text-muted); font-weight: 400"
+                >(optional — leave blank to let n8n pick one)</span
+              ></label
+            >
+            <textarea
+              id="ideaInput"
+              placeholder="e.g. How AI is transforming supply chains in 2026... or leave blank to auto-generate"
+            ></textarea>
+          </div>
+          <div class="row" style="margin-bottom: 20px">
+            <div class="input-group" style="margin-bottom: 0">
+              <label for="toneSelect">Tone</label>
+              <select id="toneSelect">
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="bold">Bold</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 0">
+              <label for="platformSelect">Platform</label>
+              <select id="platformSelect">
+                <option value="linkedin">LinkedIn</option>
+                <option value="twitter">Twitter / X</option>
+              </select>
             </div>
           </div>
-          <div class="post-text" id="postOut"></div>
+          <button
+            class="btn btn-primary"
+            id="generateBtn"
+            onclick="generateContent()"
+          >
+            &#10024; Generate Content
+          </button>
         </div>
-      </div>
 
-      <!-- Image -->
-      <div class="card">
-        <div class="card-label">🎨 Generated Image</div>
-        <div class="img-wrap" id="imgWrap">
-          <div class="img-placeholder" id="imgPlaceholder">🖼️ No image returned from n8n</div>
-          <img id="imgEl" style="display:none" alt="Generated image"/>
+        <!-- ── Loading ── -->
+        <div class="loading-state" id="loadingState">
+          <div class="spinner"></div>
+          <p>
+            Generating research, post, and image<span
+              class="loading-dots"
+            ></span>
+          </p>
         </div>
-        <div class="img-actions">
-          <button class="btn btn-outline" onclick="regenerateImage()">🔄 Regenerate Image</button>
-          <button class="btn btn-outline" onclick="downloadImg()">⬇️ Download Image</button>
+
+        <!-- ── Output ── -->
+        <div class="output-section" id="outputSection">
+          <!-- Research -->
+          <div class="card">
+            <div class="card-title">
+              <span class="icon">&#128218;</span> Research
+            </div>
+            <div class="research-content" id="researchOutput"></div>
+          </div>
+
+          <!-- Post -->
+          <div class="card">
+            <div class="card-title">
+              <span class="icon">&#128172;</span> Generated Post
+              <span
+                class="status-badge published"
+                id="statusBadge"
+                style="display: none; margin-left: auto"
+              >
+                <span class="status-dot"></span> Published
+              </span>
+            </div>
+            <div class="post-preview">
+              <div class="post-preview-header">
+                <div class="post-avatar">K</div>
+                <div class="post-meta">
+                  <div class="post-name">Khalid</div>
+                  <div class="post-time" id="postTime">Just now</div>
+                </div>
+              </div>
+              <div class="post-body" id="postOutput"></div>
+            </div>
+          </div>
+
+          <!-- Image -->
+          <div class="card">
+            <div class="card-title">
+              <span class="icon">&#127912;</span> Generated Image
+            </div>
+            <div class="image-container" id="imageContainer">
+              <div class="image-placeholder" id="imagePlaceholder">
+                No image generated
+              </div>
+              <img
+                id="generatedImage"
+                style="display: none"
+                alt="AI Generated Image"
+              />
+            </div>
+            <div class="image-actions">
+              <button class="btn btn-outline" onclick="regenerateImage()">
+                &#128260; Regenerate Image
+              </button>
+              <button class="btn btn-outline" onclick="downloadImage()">
+                &#11015;&#65039; Download Image
+              </button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="card">
+            <div class="card-title">
+              <span class="icon">&#9889;</span> Actions
+            </div>
+            <div class="actions-row">
+              <button class="btn btn-success" onclick="approveAndPublish()">
+                &#9989; Approve &amp; Publish
+              </button>
+              <button class="btn btn-outline" onclick="openEditModal()">
+                &#9998;&#65039; Edit Post
+              </button>
+              <button class="btn btn-outline" onclick="regenerateAll()">
+                &#128260; Regenerate Content
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="card">
-        <div class="card-label">⚡ Actions</div>
-        <div class="actions-row">
-          <button class="btn btn-success" onclick="openConfirm()">✅ Approve &amp; Publish</button>
-          <button class="btn btn-outline" onclick="openEdit()">✏️ Edit Post</button>
-          <button class="btn btn-outline" onclick="generate()">🔄 Regenerate</button>
-        </div>
-      </div>
-
-    </div><!-- /output -->
-  </main>
-</div><!-- /layout -->
-
-<!-- ══ CONFIRM MODAL ══ -->
-<div class="overlay" id="confirmOverlay">
-  <div class="modal confirm-modal">
-    <div class="confirm-icon">🚀</div>
-    <h3>Ready to publish?</h3>
-    <p>This will post to <strong id="confirmPlatform">LinkedIn</strong> via your n8n workflow. You can't undo this.</p>
-    <div class="confirm-preview" id="confirmPreview"></div>
-    <div class="modal-btns">
-      <button class="btn btn-cancel" onclick="closeConfirm()">✕ No, Cancel</button>
-      <button class="btn btn-success" onclick="doPublish()">✓ Yes, Publish</button>
+      </main>
     </div>
-  </div>
-</div>
 
-<!-- ══ EDIT MODAL ══ -->
-<div class="overlay" id="editOverlay">
-  <div class="modal edit-modal">
-    <h3>✏️ Edit Post</h3>
-    <textarea id="editArea"></textarea>
-    <div class="modal-btns">
-      <button class="btn btn-outline" onclick="closeEdit()">Cancel</button>
-      <button class="btn btn-accent" style="width:auto;padding:10px 20px" onclick="saveEdit()">Save Changes</button>
+    <!-- ── Confirm Publish Modal ── -->
+    <div class="modal-overlay" id="confirmModal">
+      <div class="modal confirm-modal">
+        <div class="confirm-icon">🚀</div>
+        <h3>Ready to publish?</h3>
+        <p>
+          Your post will be sent to
+          <strong id="confirmPlatform">LinkedIn</strong> via your n8n workflow.
+          This action cannot be undone.
+        </p>
+        <div class="confirm-preview" id="confirmPreview"></div>
+        <div class="modal-actions">
+          <button class="btn btn-danger" onclick="cancelPublish()">
+            ✕ No, Cancel
+          </button>
+          <button class="btn btn-success" onclick="confirmPublish()">
+            ✓ Yes, Publish
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+    <!-- ── Edit Modal ── -->
+    <div class="modal-overlay" id="editModal">
+      <div class="modal">
+        <h3>Edit Post</h3>
+        <textarea id="editTextarea"></textarea>
+        <div class="modal-actions">
+          <button class="btn btn-outline" onclick="closeEditModal()">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            style="width: auto"
+            onclick="saveEdit()"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
 
-<script>
-// ════════════════════════════════════════
-//  CONFIG — your n8n webhook URLs
-// ════════════════════════════════════════
-const WEBHOOKS = {
-  generate:  'https://n8n.srv1266495.hstgr.cloud/webhook/generate-content',
-  publish:   'https://n8n.srv1266495.hstgr.cloud/webhook/publish-post',
-  regenImg:  'https://n8n.srv1266495.hstgr.cloud/webhook/f83caef0-654d-43c3-838f-bd2d33143d98',
-};
+    <!-- ── Toast ── -->
+    <div class="toast" id="toast"></div>
 
-// ════════════════════════════════════════
-//  State
-// ════════════════════════════════════════
-let current = null;
-let history  = [];
+    <script>
+      // ═══════════════════════════════════════
+      //  CONFIGURATION — Replace with your n8n webhook URLs
+      // ═══════════════════════════════════════
+      const CONFIG = {
+        //generateEndpoint: 'https://n8n.srv1266495.hstgr.cloud/webhook/generate-content',
+        generateEndpoint:
+          "https://n8n.srv1266495.hstgr.cloud/webhook-test/generate-content",
+        //publishEndpoint:  'https://n8n.srv1266495.hstgr.cloud/webhook/publish-post',
+        publishEndpoint:
+          "https://n8n.srv1266495.hstgr.cloud/webhook-test/publish-post",
+        // imageEndpoint:    'https://n8n.srv1266495.hstgr.cloud/webhook/f83caef0-654d-43c3-838f-bd2d33143d98',
+        imageEndpoint:
+          "https://n8n.srv1266495.hstgr.cloud/webhook-test/f83caef0-654d-43c3-838f-bd2d33143d98",
+      };
 
-try { history = JSON.parse(localStorage.getItem('saharaHistory') || '[]'); } catch(e){}
+      // ── State ──
+      let currentData = null;
+      let history = JSON.parse(localStorage.getItem("contentHistory") || "[]");
 
-// ════════════════════════════════════════
-//  Theme
-// ════════════════════════════════════════
-function setTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('saharaTheme', t);
-  document.getElementById('sunBtn').classList.toggle('on', t === 'light');
-  document.getElementById('moonBtn').classList.toggle('on', t === 'dark');
-}
+      // ── Init ──
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme") || "dark";
+        setTheme(savedTheme);
+        renderHistory();
+      });
 
-function toggleTheme() {
-  setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
+      // ── Theme ──
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        document
+          .getElementById("sunIcon")
+          .classList.toggle("active", theme === "light");
+        document
+          .getElementById("moonIcon")
+          .classList.toggle("active", theme === "dark");
+      }
 
-// ════════════════════════════════════════
-//  GENERATE
-// ════════════════════════════════════════
-async function generate() {
-  const idea     = document.getElementById('ideaInput').value.trim();
-  const tone     = document.getElementById('toneSelect').value;
-  const platform = document.getElementById('platformSelect').value;
+      function toggleTheme() {
+        const current = document.documentElement.getAttribute("data-theme");
+        setTheme(current === "dark" ? "light" : "dark");
+      }
 
-  setUI('loading');
+      // ── Sidebar ──
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+      }
 
-  try {
-    const data = await callN8n(WEBHOOKS.generate, { idea: idea || null, tone, platform });
-    renderOutput(data, idea);
-  } catch(err) {
-    showError(err.message);
-    setUI('idle');
-  }
-}
+      // ── Generate ──
+      async function generateContent() {
+        const idea = document.getElementById("ideaInput").value.trim();
+        const tone = document.getElementById("toneSelect").value;
+        const platform = document.getElementById("platformSelect").value;
 
-// ════════════════════════════════════════
-//  REGENERATE IMAGE
-// ════════════════════════════════════════
-async function regenerateImage() {
-  toast('🔄 Regenerating image…');
-  try {
-    const data = await callN8n(WEBHOOKS.regenImg, {
-      idea: document.getElementById('ideaInput').value || null,
-      post: current?.post || null,
-    });
-    const url = pickField(data, ['imageUrl','image_url','image','ImageUrl','url']);
-    if (url) {
-      showImage(url);
-      if (current) current.imageUrl = url;
-      toast('✅ Image regenerated');
-    } else {
-      toast('⚠️ n8n returned no image URL');
-    }
-  } catch(err) {
-    showError(err.message);
-  }
-}
+        // UI state
+        document.getElementById("generateBtn").disabled = true;
+        document.getElementById("loadingState").classList.add("visible");
+        document.getElementById("outputSection").classList.remove("visible");
+        document.getElementById("errorBanner").classList.remove("visible");
+        document.getElementById("statusBadge").style.display = "none";
 
-// ════════════════════════════════════════
-//  PUBLISH — step 1 (confirm modal)
-// ════════════════════════════════════════
-function openConfirm() {
-  if (!current) return;
-  const platform = document.getElementById('platformSelect').value;
-  document.getElementById('confirmPlatform').textContent =
-    platform === 'linkedin' ? 'LinkedIn' : 'Twitter / X';
-  document.getElementById('confirmPreview').textContent =
-    document.getElementById('postOut').textContent;
-  document.getElementById('confirmOverlay').classList.add('show');
-}
-function closeConfirm() {
-  document.getElementById('confirmOverlay').classList.remove('show');
-}
+        try {
+          const response = await fetch(CONFIG.generateEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // idea is optional — if empty, n8n uses its built-in idea source
+            body: JSON.stringify({ idea: idea || null, tone, platform }),
+          });
 
-// ════════════════════════════════════════
-//  PUBLISH — step 2 (actually send)
-// ════════════════════════════════════════
-async function doPublish() {
-  closeConfirm();
-  toast('🚀 Publishing…');
-  try {
-    await callN8n(WEBHOOKS.publish, {
-      post:      document.getElementById('postOut').textContent,
-      imageUrl:  current?.imageUrl || '',
-      platform:  document.getElementById('platformSelect').value,
-    });
-    document.getElementById('publishedBadge').classList.add('show');
-    toast('✅ Published successfully!');
-  } catch(err) {
-    showError(err.message);
-  }
-}
+          if (!response.ok)
+            throw new Error(
+              `n8n returned status ${response.status} — check your workflow is active.`,
+            );
 
-// ════════════════════════════════════════
-//  EDIT MODAL
-// ════════════════════════════════════════
-function openEdit() {
-  document.getElementById('editArea').value = document.getElementById('postOut').textContent;
-  document.getElementById('editOverlay').classList.add('show');
-}
-function closeEdit() {
-  document.getElementById('editOverlay').classList.remove('show');
-}
-function saveEdit() {
-  const v = document.getElementById('editArea').value;
-  document.getElementById('postOut').textContent = v;
-  if (current) current.post = v;
-  closeEdit();
-  toast('✅ Post updated');
-}
+          const raw = await response.text();
+          let data;
+          try {
+            const parsed = JSON.parse(raw);
+            data = Array.isArray(parsed) ? parsed[0] : parsed;
+          } catch (e) {
+            throw new Error(
+              'n8n did not return valid JSON. Most likely fix: add a "Respond to Webhook" node at the end of your workflow, set Response Mode to "Using Respond to Webhook Node", and return { research, post, imageUrl }.',
+            );
+          }
 
-// ════════════════════════════════════════
-//  HISTORY
-// ════════════════════════════════════════
-function saveHistory(idea, data) {
-  history.unshift({ id: Date.now(), idea: idea || '(auto-generated)', data, ts: new Date().toLocaleString() });
-  if (history.length > 25) history.pop();
-  try { localStorage.setItem('saharaHistory', JSON.stringify(history)); } catch(e){}
-  renderHistory();
-}
+          // Catch n8n default "Workflow was started" response
+          if (
+            data.message &&
+            !data.research &&
+            !data.post &&
+            !data.Research &&
+            !data.Post
+          ) {
+            throw new Error(
+              'n8n acknowledged the trigger but sent no content back. Add a "Respond to Webhook" node at the end of your workflow and set Webhook → Response Mode to "Using Respond to Webhook Node".',
+            );
+          }
 
-function renderHistory() {
-  const list  = document.getElementById('historyList');
-  const empty = document.getElementById('historyEmpty');
-  list.querySelectorAll('.history-item').forEach(e => e.remove());
-  if (!history.length) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  history.forEach((entry, i) => {
-    const li = document.createElement('li');
-    li.className = 'history-item';
-    li.innerHTML = `<span class="history-dot"></span>${entry.idea.substring(0, 38)}${entry.idea.length > 38 ? '…' : ''}`;
-    li.onclick = () => loadHistory(i);
-    list.appendChild(li);
-  });
-}
+          currentData = data;
 
-function loadHistory(i) {
-  const e = history[i];
-  if (!e) return;
-  document.getElementById('ideaInput').value = e.idea === '(auto-generated)' ? '' : e.idea;
-  renderOutput(e.data, e.idea, e.ts);
-  document.querySelectorAll('.history-item').forEach((el, j) =>
-    el.classList.toggle('active', j === i));
-  document.getElementById('sidebar').classList.remove('open');
-  toast('📄 Loaded from history');
-}
+          // Populate outputs — support common n8n key variations
+          const research = data.research || data.Research || data.summary || "";
+          const post =
+            data.post || data.Post || data.content || data.text || "";
+          const imageUrl =
+            data.imageUrl ||
+            data.image_url ||
+            data.image ||
+            data.ImageUrl ||
+            "";
 
-function clearHistory() {
-  history = [];
-  try { localStorage.removeItem('saharaHistory'); } catch(e){}
-  renderHistory();
-  toast('🗑 History cleared');
-}
+          document.getElementById("researchOutput").textContent =
+            research || "No research data returned from n8n.";
+          document.getElementById("postOutput").textContent =
+            post || "No post content returned from n8n.";
+          document.getElementById("postTime").textContent = "Just now";
 
-// ════════════════════════════════════════
-//  RENDER OUTPUT
-// ════════════════════════════════════════
-function renderOutput(data, idea, ts) {
-  current = data;
+          if (imageUrl) {
+            const img = document.getElementById("generatedImage");
+            img.src = imageUrl;
+            img.style.display = "block";
+            document.getElementById("imagePlaceholder").style.display = "none";
+            data.imageUrl = imageUrl; // normalise key
+          }
 
-  // ── Map YOUR exact n8n field names ──
-  // text  → the LinkedIn post body
-  // name  → post title shown in research block
-  // idea  → expanded idea shown as research context
-  // imageUrl / image → Google Drive URL
-  const postText = pickField(data, ['text','Text','post','Post','content','Content','linkedinPost']) || '';
-  const title    = pickField(data, ['name','Name','title','Title']) || '';
-  const ideaTxt  = pickField(data, ['idea','Idea','research','Research','summary']) || '';
-  const rawImg   = pickField(data, ['imageUrl','image_url','image','Image','ImageUrl','imageURL']) || '';
-  const imageUrl = gdriveDirect(rawImg); // convert Google Drive URL if needed
+          document.getElementById("outputSection").classList.add("visible");
+          addToHistory(idea || "(auto-generated)", data);
+        } catch (err) {
+          if (err.message === "Failed to fetch") {
+            showError(
+              "Could not reach n8n. Fix: open each Webhook node in n8n → Settings → set Allowed Origins to *  — then try again.",
+            );
+          } else {
+            showError(err.message);
+          }
+        } finally {
+          document.getElementById("loadingState").classList.remove("visible");
+          document.getElementById("generateBtn").disabled = false;
+        }
+      }
 
-  // Research block shows title + idea
-  const researchDisplay = [title, ideaTxt].filter(Boolean).join('\n\n');
-  document.getElementById('researchOut').textContent = researchDisplay || 'لم يتم إرجاع بيانات من n8n.';
-  document.getElementById('postOut').textContent     = postText || 'لم يتم إرجاع نص من n8n.';
-  document.getElementById('postTime').textContent    = ts || 'الآن';
-  document.getElementById('publishedBadge').classList.remove('show');
+      // ── Regenerate Image ──
+      async function regenerateImage() {
+        showToast("&#128260; Regenerating image...");
 
-  if (imageUrl) {
-    showImage(imageUrl);
-    data.imageUrl = imageUrl;
-  } else {
-    document.getElementById('imgEl').style.display = 'none';
-    document.getElementById('imgPlaceholder').style.display = 'block';
-    document.getElementById('imgPlaceholder').textContent = '🖼️ لم يتم إرجاع صورة من n8n';
-  }
+        try {
+          const response = await fetch(CONFIG.imageEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              idea: document.getElementById("ideaInput").value || null,
+              post: currentData?.post || null,
+            }),
+          });
 
-  setUI('output');
-  saveHistory(idea, data);
-  setTimeout(() => document.getElementById('output').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
-}
+          if (!response.ok)
+            throw new Error(`n8n returned status ${response.status}`);
 
-// Convert Google Drive share URL → direct embeddable URL
-function gdriveDirect(url) {
-  if (!url) return '';
-  // Already a direct URL
-  if (!url.includes('drive.google.com')) return url;
-  // Extract file ID from: /file/d/FILE_ID/view  or  ?id=FILE_ID
-  const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (m) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
-  return url;
-}
+          const raw = await response.text();
+          let data;
+          try {
+            const parsed = JSON.parse(raw);
+            data = Array.isArray(parsed) ? parsed[0] : parsed;
+          } catch (e) {
+            throw new Error("n8n response was not valid JSON.");
+          }
 
-// ════════════════════════════════════════
-//  CORE FETCH WRAPPER
-// ════════════════════════════════════════
-async function callN8n(url, body) {
-  const ctrl    = new AbortController();
-  const timeout = setTimeout(() => ctrl.abort(), 120000);
+          const imageUrl =
+            data.imageUrl ||
+            data.image_url ||
+            data.image ||
+            data.ImageUrl ||
+            "";
+          if (imageUrl) {
+            const img = document.getElementById("generatedImage");
+            img.src = imageUrl;
+            img.style.display = "block";
+            document.getElementById("imagePlaceholder").style.display = "none";
+            if (currentData) currentData.imageUrl = imageUrl;
+            showToast("&#9989; Image regenerated");
+          } else {
+            showToast("&#9888;&#65039; No image URL in n8n response");
+          }
+        } catch (err) {
+          if (err.message === "Failed to fetch") {
+            showError(
+              "Could not reach n8n. Fix: Webhook node → Settings → Allowed Origins = *",
+            );
+          } else {
+            showError(err.message);
+          }
+        }
+      }
 
-  let res;
-  try {
-    res = await fetch(url, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body),
-      signal:  ctrl.signal,
-    });
-  } catch(e) {
-    clearTimeout(timeout);
-    if (e.name === 'AbortError') throw new Error('Request timed out (2 min). Check that your n8n Webhook node has Respond = "Using Respond to Webhook Node" and that node exists at the end of your workflow.');
-    throw new Error('Could not reach n8n (' + e.message + '). Make sure the workflow is active and Allowed Origins = * in the Webhook node.');
-  }
-  clearTimeout(timeout);
+      // ── Download Image ──
+      function downloadImage() {
+        if (!currentData?.imageUrl) {
+          showToast("&#9888;&#65039; No image to download");
+          return;
+        }
+        const a = document.createElement("a");
+        a.href = currentData.imageUrl;
+        a.download = "ai-generated-image.png";
+        a.target = "_blank";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
 
-  const raw = await res.text();
+      // ── Approve & Publish — Step 1: show confirmation ──
+      function approveAndPublish() {
+        if (!currentData) return;
 
-  // Empty body → workflow ran but never responded
-  if (!raw || raw.trim() === '') {
-    throw new Error('n8n returned an empty response. Fix: add a "Respond to Webhook" node at the END of your workflow → set Respond With = JSON → map your fields (research, post, imageUrl).');
-  }
+        const platform = document.getElementById("platformSelect").value;
+        const postText = document.getElementById("postOutput").textContent;
 
-  // Try parse JSON
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch(e) {
-    throw new Error('n8n returned non-JSON: ' + raw.substring(0, 200));
-  }
+        // Populate confirm modal
+        document.getElementById("confirmPlatform").textContent =
+          platform === "linkedin" ? "LinkedIn" : "Twitter / X";
+        document.getElementById("confirmPreview").textContent = postText;
 
-  // n8n sometimes wraps in array
-  const data = Array.isArray(parsed) ? parsed[0] : parsed;
+        document.getElementById("confirmModal").classList.add("visible");
+      }
 
-  // n8n default "workflow started" response (no Respond to Webhook node)
-  if (data?.message === 'Workflow was started' && Object.keys(data).length <= 2) {
-    throw new Error('n8n started the workflow but sent no data back. Add a "Respond to Webhook" node at the end of your workflow and return { research, post, imageUrl }.');
-  }
+      function cancelPublish() {
+        document.getElementById("confirmModal").classList.remove("visible");
+        showToast("❌ Publish cancelled");
+      }
 
-  if (!res.ok) {
-    throw new Error('n8n error ' + res.status + ': ' + JSON.stringify(data).substring(0, 200));
-  }
+      // ── Approve & Publish — Step 2: actually post ──
+      async function confirmPublish() {
+        document.getElementById("confirmModal").classList.remove("visible");
+        showToast("🚀 Publishing...");
 
-  return data;
-}
+        try {
+          const response = await fetch(CONFIG.publishEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              post: document.getElementById("postOutput").textContent,
+              imageUrl: currentData.imageUrl,
+              platform: document.getElementById("platformSelect").value,
+            }),
+          });
 
-// ════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════
-function pickField(obj, keys) {
-  if (!obj) return null;
-  for (const k of keys) {
-    if (obj[k] !== undefined && obj[k] !== null && obj[k] !== '') return obj[k];
-  }
-  return null;
-}
+          if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-function showImage(url) {
-  const img = document.getElementById('imgEl');
-  img.src = url;
-  img.style.display = 'block';
-  document.getElementById('imgPlaceholder').style.display = 'none';
-}
+          document.getElementById("statusBadge").style.display = "inline-flex";
+          showToast("✅ Post published successfully!");
+        } catch (err) {
+          showError(err.message);
+        }
+      }
 
-function downloadImg() {
-  const url = current?.imageUrl;
-  if (!url) { toast('⚠️ No image to download'); return; }
-  const a = document.createElement('a');
-  a.href = url; a.download = 'sahara-image.png'; a.target = '_blank';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
+      // ── Regenerate All ──
+      function regenerateAll() {
+        generateContent();
+      }
 
-function setUI(state) {
-  const btn    = document.getElementById('generateBtn');
-  const loader = document.getElementById('loader');
-  const output = document.getElementById('output');
-  const errBox = document.getElementById('errorBox');
+      // ── Edit Modal ──
+      function openEditModal() {
+        document.getElementById("editTextarea").value =
+          document.getElementById("postOutput").textContent;
+        document.getElementById("editModal").classList.add("visible");
+      }
 
-  errBox.classList.remove('show');
+      function closeEditModal() {
+        document.getElementById("editModal").classList.remove("visible");
+      }
 
-  if (state === 'loading') {
-    btn.disabled = true;
-    loader.classList.add('show');
-    output.classList.remove('show');
-  } else if (state === 'output') {
-    btn.disabled = false;
-    loader.classList.remove('show');
-    output.classList.add('show');
-  } else { // idle
-    btn.disabled = false;
-    loader.classList.remove('show');
-  }
-}
+      function saveEdit() {
+        const newText = document.getElementById("editTextarea").value;
+        document.getElementById("postOutput").textContent = newText;
+        if (currentData) currentData.post = newText;
+        closeEditModal();
+        showToast("&#9989; Post updated");
+      }
 
-function showError(msg) {
-  document.getElementById('errorMsg').textContent = msg;
-  document.getElementById('errorBox').classList.add('show');
-  document.getElementById('errorBox').scrollIntoView({ behavior:'smooth', block:'nearest' });
-}
+      // ── History ──
+      function addToHistory(idea, data) {
+        const entry = {
+          id: Date.now(),
+          idea: idea.substring(0, 60),
+          data,
+          timestamp: new Date().toLocaleString(),
+        };
+        history.unshift(entry);
+        if (history.length > 20) history.pop();
+        localStorage.setItem("contentHistory", JSON.stringify(history));
+        renderHistory();
+      }
 
-function toast(msg, dur = 3200) {
-  const t = document.getElementById('toast');
-  t.innerHTML = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), dur);
-}
+      function renderHistory() {
+        const list = document.getElementById("historyList");
+        const empty = document.getElementById("historyEmpty");
 
-// ════════════════════════════════════════
-//  CLOSE MODALS ON BACKDROP CLICK
-// ════════════════════════════════════════
-document.getElementById('confirmOverlay').addEventListener('click', function(e){ if(e.target===this) closeConfirm(); });
-document.getElementById('editOverlay').addEventListener('click',    function(e){ if(e.target===this) closeEdit(); });
+        // Remove old items
+        list.querySelectorAll(".history-item").forEach((el) => el.remove());
 
-// Ctrl+Enter shortcut
-document.getElementById('ideaInput').addEventListener('keydown', e => {
-  if ((e.ctrlKey||e.metaKey) && e.key==='Enter') generate();
-});
+        if (history.length === 0) {
+          empty.style.display = "block";
+          return;
+        }
 
-// ════════════════════════════════════════
-//  INIT
-// ════════════════════════════════════════
-(function init() {
-  const saved = localStorage.getItem('saharaTheme') || 'dark';
-  setTheme(saved);
-  renderHistory();
-})();
-</script>
-</body>
+        empty.style.display = "none";
+
+        history.forEach((entry, i) => {
+          const li = document.createElement("li");
+          li.className = "history-item";
+          li.innerHTML = `<span class="dot"></span>${entry.idea}${entry.idea.length >= 60 ? "..." : ""}`;
+          li.onclick = () => loadHistoryEntry(i);
+          list.appendChild(li);
+        });
+      }
+
+      function loadHistoryEntry(index) {
+        const entry = history[index];
+        if (!entry) return;
+
+        currentData = entry.data;
+        document.getElementById("ideaInput").value = entry.idea;
+        document.getElementById("researchOutput").textContent =
+          entry.data.research || "";
+        document.getElementById("postOutput").textContent =
+          entry.data.post || "";
+        document.getElementById("postTime").textContent = entry.timestamp;
+
+        if (entry.data.imageUrl) {
+          const img = document.getElementById("generatedImage");
+          img.src = entry.data.imageUrl;
+          img.style.display = "block";
+          document.getElementById("imagePlaceholder").style.display = "none";
+        }
+
+        document.getElementById("outputSection").classList.add("visible");
+        document.getElementById("statusBadge").style.display = "none";
+
+        // Highlight active
+        document.querySelectorAll(".history-item").forEach((el, i) => {
+          el.classList.toggle("active", i === index);
+        });
+
+        // Close sidebar on mobile
+        document.getElementById("sidebar").classList.remove("open");
+        showToast("&#128196; Loaded from history");
+      }
+
+      function clearHistory() {
+        history = [];
+        localStorage.removeItem("contentHistory");
+        renderHistory();
+        showToast("&#128465; History cleared");
+      }
+
+      // ── Toast ──
+      function showToast(msg) {
+        const toast = document.getElementById("toast");
+        toast.innerHTML = msg;
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 3000);
+      }
+
+      // ── Error ──
+      function showError(msg) {
+        document.getElementById("errorText").textContent = msg;
+        document.getElementById("errorBanner").classList.add("visible");
+      }
+
+      // Close modals on backdrop click
+      document
+        .getElementById("editModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) closeEditModal();
+        });
+
+      document
+        .getElementById("confirmModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) cancelPublish();
+        });
+
+      // Keyboard shortcut: Ctrl+Enter to generate
+      document
+        .getElementById("ideaInput")
+        .addEventListener("keydown", function (e) {
+          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") generateContent();
+        });
+    </script>
+  </body>
 </html>
