@@ -1055,22 +1055,28 @@
       }
 
       // ════════════════════════════════════════
-      //  REGENERATE IMAGE
+      //  REGENERATE IMAGE  (re-runs generate workflow)
       // ════════════════════════════════════════
       async function regenerateImage() {
         toast("🔄 Regenerating image…");
         try {
-          const data = await callN8n(WEBHOOKS.regenImg, {
-            idea: document.getElementById("ideaInput").value || null,
-            post: current?.post || null,
-          });
-          const url = pickField(data, [
+          const idea = document.getElementById("ideaInput").value.trim() || null;
+          const tone = document.getElementById("toneSelect").value;
+          const platform = document.getElementById("platformSelect").value;
+
+          const data = await callN8n(WEBHOOKS.generate, { idea, tone, platform });
+
+          const rawImg = pickField(data, [
             "imageUrl",
             "image_url",
             "image",
+            "Image",
             "ImageUrl",
+            "imageURL",
             "url",
           ]);
+          const url = gdriveDirect(rawImg);
+
           if (url) {
             showImage(url);
             if (current) current.imageUrl = url;
@@ -1106,11 +1112,34 @@
         closeConfirm();
         toast("🚀 Publishing…");
         try {
-          await callN8n(WEBHOOKS.publish, {
-            post: document.getElementById("postOut").textContent,
-            imageUrl: current?.imageUrl || "",
-            platform: document.getElementById("platformSelect").value,
-          });
+          const ctrl = new AbortController();
+          const timeout = setTimeout(() => ctrl.abort(), 120000);
+          let res;
+          try {
+            res = await fetch(WEBHOOKS.publish, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                post: document.getElementById("postOut").textContent,
+                imageUrl: current?.imageUrl || "",
+                platform: document.getElementById("platformSelect").value,
+              }),
+              signal: ctrl.signal,
+            });
+          } catch (e) {
+            clearTimeout(timeout);
+            if (e.name === "AbortError")
+              throw new Error("Publish request timed out (2 min). Check your n8n workflow is active.");
+            throw new Error("Could not reach n8n publish webhook (" + e.message + ").");
+          }
+          clearTimeout(timeout);
+
+          if (!res.ok) {
+            const raw = await res.text().catch(() => "");
+            throw new Error("n8n publish error " + res.status + ": " + raw.substring(0, 200));
+          }
+
+          // Accept any 2xx — publish webhooks often return {"message":"Workflow was started"}
           document.getElementById("publishedBadge").classList.add("show");
           toast("✅ Published successfully!");
         } catch (err) {
