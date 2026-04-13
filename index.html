@@ -724,24 +724,225 @@
         justify-content: flex-end;
       }
 
-      /* ── n8n debug panel (hidden by default) ── */
-      .debug-box {
+      /* ── Debug panel ── */
+      .debug-panel {
         display: none;
-        background: var(--bg-surface-2);
-        border: 1px dashed var(--border);
-        border-radius: var(--radius-sm);
-        padding: 12px;
-        margin-top: 10px;
-        font-family: monospace;
-        font-size: 12px;
-        color: var(--text-muted);
-        word-break: break-all;
-        white-space: pre-wrap;
-        max-height: 120px;
-        overflow-y: auto;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
       }
-      .debug-box.show {
+      .debug-panel.show {
         display: block;
+      }
+
+      .debug-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: var(--bg-surface-2);
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+        font-size: 13px;
+        gap: 10px;
+      }
+      .debug-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .debug-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .debug-endpoint {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+      .debug-ep-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--bg-surface-2);
+        font-size: 12px;
+        flex-wrap: wrap;
+      }
+      .debug-ep-label {
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        min-width: 80px;
+      }
+      .debug-ep-url {
+        font-family: monospace;
+        color: var(--text-muted);
+        flex: 1;
+        word-break: break-all;
+        font-size: 11px;
+      }
+      .debug-status {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+      .debug-status.idle {
+        background: var(--bg-input);
+        color: var(--text-muted);
+      }
+      .debug-status.testing {
+        background: rgba(192, 103, 74, 0.15);
+        color: var(--accent);
+      }
+      .debug-status.ok {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .debug-status.err {
+        background: rgba(224, 85, 85, 0.12);
+        color: var(--danger);
+      }
+
+      .debug-ep-body {
+        padding: 10px 14px;
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .debug-ep-body.show {
+        display: flex;
+      }
+
+      .debug-row {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        font-size: 11px;
+      }
+      .debug-row-label {
+        font-weight: 600;
+        min-width: 60px;
+        color: var(--text-muted);
+        padding-top: 1px;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.05em;
+      }
+      .debug-pre {
+        font-family: monospace;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px 10px;
+        font-size: 11px;
+        color: var(--text);
+        white-space: pre-wrap;
+        word-break: break-all;
+        flex: 1;
+        max-height: 160px;
+        overflow-y: auto;
+        line-height: 1.5;
+      }
+      .debug-pre.ok {
+        border-color: var(--success);
+        color: var(--success);
+      }
+      .debug-pre.err {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .debug-log-wrap {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+      .debug-log-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 14px;
+        background: var(--bg-surface-2);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+      }
+      .debug-log {
+        font-family: monospace;
+        font-size: 11px;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: var(--bg-input);
+      }
+      .debug-log-entry {
+        display: flex;
+        gap: 8px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 4px;
+        line-height: 1.4;
+      }
+      .debug-log-entry:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .log-time {
+        color: var(--text-muted);
+        min-width: 56px;
+      }
+      .log-tag {
+        font-weight: 700;
+        min-width: 70px;
+      }
+      .log-tag.req {
+        color: var(--accent);
+      }
+      .log-tag.res {
+        color: var(--success);
+      }
+      .log-tag.err {
+        color: var(--danger);
+      }
+      .log-msg {
+        color: var(--text);
+        flex: 1;
+        word-break: break-all;
+      }
+
+      .btn-debug-toggle {
+        font-size: 12px;
+        padding: 5px 12px;
+        background: var(--bg-surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all var(--transition);
+      }
+      .btn-debug-toggle:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .btn-debug-toggle.active {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-bg);
       }
 
       /* ── Responsive ── */
@@ -819,9 +1020,18 @@
       <main class="main">
         <div class="topbar">
           <div class="page-title">Content Generator</div>
-          <div class="theme-btn" onclick="toggleTheme()">
-            <span id="sunBtn">☀️</span>
-            <span id="moonBtn" class="on">🌙</span>
+          <div style="display: flex; gap: 8px; align-items: center">
+            <button
+              class="btn-debug-toggle"
+              id="debugToggleBtn"
+              onclick="toggleDebug()"
+            >
+              🔧 Debug
+            </button>
+            <div class="theme-btn" onclick="toggleTheme()">
+              <span id="sunBtn">☀️</span>
+              <span id="moonBtn" class="on">🌙</span>
+            </div>
           </div>
         </div>
 
@@ -830,6 +1040,129 @@
           <span>⚠️</span>
           <span id="errorMsg"></span>
         </div>
+
+        <!-- ══ DEBUG PANEL ══ -->
+        <div class="debug-panel" id="debugPanel">
+          <div class="debug-header">
+            <div class="debug-header-left">🔧 n8n Workflow Debugger</div>
+            <button
+              class="btn btn-ghost"
+              style="font-size: 12px; padding: 4px 10px"
+              onclick="toggleDebug()"
+            >
+              ✕ Close
+            </button>
+          </div>
+          <div class="debug-body">
+            <!-- Generate endpoint -->
+            <div class="debug-endpoint" id="dbk-generate">
+              <div class="debug-ep-header">
+                <span class="debug-ep-label">Generate</span>
+                <span class="debug-ep-url" id="dbk-generate-url"></span>
+                <span class="debug-status idle" id="dbk-generate-status"
+                  >Idle</span
+                >
+                <button
+                  class="btn btn-outline"
+                  style="font-size: 11px; padding: 4px 10px"
+                  onclick="debugTest('generate')"
+                >
+                  ▶ Test
+                </button>
+              </div>
+              <div class="debug-ep-body" id="dbk-generate-body">
+                <div class="debug-row">
+                  <span class="debug-row-label">Request</span>
+                  <pre class="debug-pre" id="dbk-generate-req"></pre>
+                </div>
+                <div class="debug-row">
+                  <span class="debug-row-label">Response</span>
+                  <pre class="debug-pre" id="dbk-generate-res"></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Publish endpoint -->
+            <div class="debug-endpoint" id="dbk-publish">
+              <div class="debug-ep-header">
+                <span class="debug-ep-label">Publish</span>
+                <span class="debug-ep-url" id="dbk-publish-url"></span>
+                <span class="debug-status idle" id="dbk-publish-status"
+                  >Idle</span
+                >
+                <button
+                  class="btn btn-outline"
+                  style="font-size: 11px; padding: 4px 10px"
+                  onclick="debugTest('publish')"
+                >
+                  ▶ Test
+                </button>
+              </div>
+              <div class="debug-ep-body" id="dbk-publish-body">
+                <div class="debug-row">
+                  <span class="debug-row-label">Request</span>
+                  <pre class="debug-pre" id="dbk-publish-req"></pre>
+                </div>
+                <div class="debug-row">
+                  <span class="debug-row-label">Response</span>
+                  <pre class="debug-pre" id="dbk-publish-res"></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- RegenImg endpoint -->
+            <div class="debug-endpoint" id="dbk-regenImg">
+              <div class="debug-ep-header">
+                <span class="debug-ep-label">Regen Img</span>
+                <span class="debug-ep-url" id="dbk-regenImg-url"></span>
+                <span class="debug-status idle" id="dbk-regenImg-status"
+                  >Idle</span
+                >
+                <button
+                  class="btn btn-outline"
+                  style="font-size: 11px; padding: 4px 10px"
+                  onclick="debugTest('regenImg')"
+                >
+                  ▶ Test
+                </button>
+              </div>
+              <div class="debug-ep-body" id="dbk-regenImg-body">
+                <div class="debug-row">
+                  <span class="debug-row-label">Request</span>
+                  <pre class="debug-pre" id="dbk-regenImg-req"></pre>
+                </div>
+                <div class="debug-row">
+                  <span class="debug-row-label">Response</span>
+                  <pre class="debug-pre" id="dbk-regenImg-res"></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live activity log -->
+            <div class="debug-log-wrap">
+              <div class="debug-log-header">
+                <span>Live Activity Log</span>
+                <button
+                  class="btn btn-ghost"
+                  style="font-size: 10px; padding: 2px 8px"
+                  onclick="clearDebugLog()"
+                >
+                  Clear
+                </button>
+              </div>
+              <div class="debug-log" id="debugLog">
+                <div class="debug-log-entry">
+                  <span class="log-time">--:--</span
+                  ><span class="log-msg" style="color: var(--text-muted)"
+                    >No activity yet — press ▶ Test or use the app
+                    normally.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /debug panel -->
 
         <!-- ── Input card ── -->
         <div class="card">
@@ -997,7 +1330,7 @@
         // generate: "https://n8n.srv1266495.hstgr.cloud/webhook/gen",
         generate: "https://n8n.srv1266495.hstgr.cloud/webhook-test/gen",
         // publish: "https://n8n.srv1266495.hstgr.cloud/webhook/publish-post",
-        publish: "https://n8n.srv1266495.hstgr.cloud/webhook-test/publish-post",
+        publish: "https://n8n.srv1266495.hstgr.cloud/webhook-test/publish",
         //regenImg:"https://n8n.srv1266495.hstgr.cloud/webhook/f83caef0-654d-43c3-838f-bd2d33143d98",
         regenImg:
           "https://n8n.srv1266495.hstgr.cloud/webhook-test/f83caef0-654d-43c3-838f-bd2d33143d98",
@@ -1060,11 +1393,16 @@
       async function regenerateImage() {
         toast("🔄 Regenerating image…");
         try {
-          const idea = document.getElementById("ideaInput").value.trim() || null;
+          const idea =
+            document.getElementById("ideaInput").value.trim() || null;
           const tone = document.getElementById("toneSelect").value;
           const platform = document.getElementById("platformSelect").value;
 
-          const data = await callN8n(WEBHOOKS.generate, { idea, tone, platform });
+          const data = await callN8n(WEBHOOKS.generate, {
+            idea,
+            tone,
+            platform,
+          });
 
           const rawImg = pickField(data, [
             "imageUrl",
@@ -1111,6 +1449,12 @@
       async function doPublish() {
         closeConfirm();
         toast("🚀 Publishing…");
+        const payload = {
+          post: document.getElementById("postOut").textContent,
+          imageUrl: current?.imageUrl || "",
+          platform: document.getElementById("platformSelect").value,
+        };
+        dbkLog("req", "PUBLISH", JSON.stringify(payload).substring(0, 120));
         try {
           const ctrl = new AbortController();
           const timeout = setTimeout(() => ctrl.abort(), 120000);
@@ -1119,27 +1463,38 @@
             res = await fetch(WEBHOOKS.publish, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                post: document.getElementById("postOut").textContent,
-                imageUrl: current?.imageUrl || "",
-                platform: document.getElementById("platformSelect").value,
-              }),
+              body: JSON.stringify(payload),
               signal: ctrl.signal,
             });
           } catch (e) {
             clearTimeout(timeout);
-            if (e.name === "AbortError")
-              throw new Error("Publish request timed out (2 min). Check your n8n workflow is active.");
-            throw new Error("Could not reach n8n publish webhook (" + e.message + ").");
+            const msg =
+              e.name === "AbortError"
+                ? "Publish request timed out (2 min). Check your n8n workflow is active."
+                : "Could not reach n8n publish webhook (" + e.message + ").";
+            dbkLog("err", "PUBLISH", msg);
+            throw new Error(msg);
           }
           clearTimeout(timeout);
 
+          const raw = await res.text().catch(() => "");
           if (!res.ok) {
-            const raw = await res.text().catch(() => "");
-            throw new Error("n8n publish error " + res.status + ": " + raw.substring(0, 200));
+            dbkLog(
+              "err",
+              "PUBLISH",
+              "HTTP " + res.status + " → " + raw.substring(0, 120),
+            );
+            throw new Error(
+              "n8n publish error " + res.status + ": " + raw.substring(0, 200),
+            );
           }
 
           // Accept any 2xx — publish webhooks often return {"message":"Workflow was started"}
+          dbkLog(
+            "res",
+            "PUBLISH",
+            "HTTP " + res.status + " → " + raw.substring(0, 120),
+          );
           document.getElementById("publishedBadge").classList.add("show");
           toast("✅ Published successfully!");
         } catch (err) {
@@ -1310,7 +1665,7 @@
       // ════════════════════════════════════════
       //  CORE FETCH WRAPPER
       // ════════════════════════════════════════
-      async function callN8n(url, body) {
+      async function _callN8nCore(url, body) {
         const ctrl = new AbortController();
         const timeout = setTimeout(() => ctrl.abort(), 120000);
 
@@ -1449,6 +1804,184 @@
         t.classList.add("show");
         clearTimeout(t._timer);
         t._timer = setTimeout(() => t.classList.remove("show"), dur);
+      }
+
+      // ════════════════════════════════════════
+      //  DEBUG PANEL
+      // ════════════════════════════════════════
+
+      // Populate URL labels once WEBHOOKS is defined
+      (function initDebugUrls() {
+        const keys = ["generate", "publish", "regenImg"];
+        keys.forEach((k) => {
+          const el = document.getElementById("dbk-" + k + "-url");
+          if (el) el.textContent = WEBHOOKS[k] || "—";
+        });
+      })();
+
+      function toggleDebug() {
+        const panel = document.getElementById("debugPanel");
+        const btn = document.getElementById("debugToggleBtn");
+        const open = panel.classList.toggle("show");
+        btn.classList.toggle("active", open);
+      }
+
+      // Debug-specific test payloads for each endpoint
+      const DEBUG_PAYLOADS = {
+        generate: {
+          idea: "AI in supply chains",
+          tone: "professional",
+          platform: "linkedin",
+        },
+        publish: {
+          post: "[DEBUG TEST] This is a test publish call.",
+          imageUrl: "",
+          platform: "linkedin",
+        },
+        regenImg: {
+          idea: "AI in supply chains",
+          tone: "professional",
+          platform: "linkedin",
+        },
+      };
+
+      function dbkSetStatus(key, state, label) {
+        const el = document.getElementById("dbk-" + key + "-status");
+        if (!el) return;
+        el.className = "debug-status " + state;
+        el.textContent = label;
+      }
+
+      function dbkShowBody(key, reqJson, resText, isOk) {
+        const body = document.getElementById("dbk-" + key + "-body");
+        const reqEl = document.getElementById("dbk-" + key + "-req");
+        const resEl = document.getElementById("dbk-" + key + "-res");
+        if (!body) return;
+        body.classList.add("show");
+        if (reqEl) reqEl.textContent = JSON.stringify(reqJson, null, 2);
+        if (resEl) {
+          resEl.textContent = resText;
+          resEl.className = "debug-pre " + (isOk ? "ok" : "err");
+        }
+      }
+
+      async function debugTest(key) {
+        const url = WEBHOOKS[key];
+        const payload = DEBUG_PAYLOADS[key];
+        if (!url) {
+          dbkSetStatus(key, "err", "No URL");
+          return;
+        }
+
+        dbkSetStatus(key, "testing", "Testing…");
+        dbkLog("req", key.toUpperCase(), JSON.stringify(payload));
+
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 120000);
+
+        let resText = "",
+          isOk = false,
+          httpStatus = "?";
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal: ctrl.signal,
+          });
+          clearTimeout(timeout);
+          httpStatus = res.status;
+          resText = await res.text();
+          isOk = res.ok;
+
+          // Pretty-print JSON if possible
+          try {
+            resText = JSON.stringify(JSON.parse(resText), null, 2);
+          } catch (_) {}
+
+          dbkSetStatus(
+            key,
+            isOk ? "ok" : "err",
+            isOk
+              ? "HTTP " + httpStatus + " OK"
+              : "HTTP " + httpStatus + " Error",
+          );
+          dbkLog(
+            isOk ? "res" : "err",
+            key.toUpperCase(),
+            "HTTP " + httpStatus + " → " + resText.substring(0, 120),
+          );
+        } catch (e) {
+          clearTimeout(timeout);
+          resText =
+            e.name === "AbortError"
+              ? "TIMEOUT — workflow took > 2 min or is not active"
+              : "NETWORK ERROR: " + e.message;
+          dbkSetStatus(
+            key,
+            "err",
+            e.name === "AbortError" ? "Timeout" : "Net Error",
+          );
+          dbkLog("err", key.toUpperCase(), resText);
+          isOk = false;
+        }
+
+        dbkShowBody(key, payload, resText, isOk);
+      }
+
+      function dbkLog(type, tag, msg) {
+        const log = document.getElementById("debugLog");
+        if (!log) return;
+        // Remove placeholder
+        const placeholder = log.querySelector(".debug-log-entry:only-child");
+        if (placeholder && placeholder.querySelector(".log-msg")?.style.color) {
+          log.innerHTML = "";
+        }
+        const now = new Date();
+        const time =
+          now.getHours().toString().padStart(2, "0") +
+          ":" +
+          now.getMinutes().toString().padStart(2, "0") +
+          ":" +
+          now.getSeconds().toString().padStart(2, "0");
+        const entry = document.createElement("div");
+        entry.className = "debug-log-entry";
+        entry.innerHTML =
+          `<span class="log-time">${time}</span>` +
+          `<span class="log-tag ${type}">[${tag}]</span>` +
+          `<span class="log-msg">${msg.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function clearDebugLog() {
+        const log = document.getElementById("debugLog");
+        if (log)
+          log.innerHTML =
+            '<div class="debug-log-entry"><span class="log-time">--:--</span><span class="log-msg" style="color:var(--text-muted);">Log cleared.</span></div>';
+      }
+
+      // ── callN8n — logs every real app call then delegates to core ──
+      async function callN8n(url, body) {
+        const key =
+          Object.keys(WEBHOOKS).find((k) => WEBHOOKS[k] === url) || url;
+        dbkLog(
+          "req",
+          key.toUpperCase(),
+          JSON.stringify(body).substring(0, 120),
+        );
+        try {
+          const data = await _callN8nCore(url, body);
+          dbkLog(
+            "res",
+            key.toUpperCase(),
+            JSON.stringify(data).substring(0, 160),
+          );
+          return data;
+        } catch (err) {
+          dbkLog("err", key.toUpperCase(), err.message.substring(0, 160));
+          throw err;
+        }
       }
 
       // ════════════════════════════════════════
