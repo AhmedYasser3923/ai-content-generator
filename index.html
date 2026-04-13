@@ -129,6 +129,24 @@
         font-weight: 700;
         line-height: 1.3;
       }
+      .beta-badge {
+        font-size: 0.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+
+        color: var(--accent); /* uses your system accent */
+
+        border: 1px solid var(--border);
+        border-radius: 6px;
+
+        padding: 1px 5px;
+
+        position: relative;
+        top: -2px;
+
+        opacity: 0.85;
+      }
       .brand-sub {
         font-size: 11px;
         color: var(--text-muted);
@@ -776,7 +794,9 @@
         <div class="sidebar-brand">
           <div class="brand-logo">S</div>
           <div>
-            <div class="brand-name">Sahara Content Studio</div>
+            <div class="brand-name">
+              Sahara Content Studio <span class="beta-badge">Beta Version</span>
+            </div>
             <div class="brand-sub">Powered by SpaceTechs</div>
           </div>
         </div>
